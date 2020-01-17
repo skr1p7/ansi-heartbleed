@@ -1,0 +1,103 @@
+# Installing | Checking | Restarting services
+---
+- name: Installing OpenSSL
+  dnf:
+    name: openssl
+    state: latest
+
+- name: HTTPD status
+  stat: 
+    path: /etc/init.d/httpd
+  register: service_status
+
+- name: HTTPD restart
+  service: 
+    name: httpd
+    state: restarted
+  when: service_status.stat.exists
+
+- name: php5-fpm 
+  stat: 
+    path: /etc/init.d/php5-fpm
+  register: service_status
+
+- name: Restart php5-fpm 
+  service: 
+    name: php5-fpm
+    state: restarted
+  when: service_status.stat.exists
+
+- name: postgresql 
+  stat: 
+    path: /etc/init.d/postgresql
+  register: service_status
+
+- name: Restart postgresql 
+  service: 
+    name: postgresql
+    state: restarted
+  when: service_status.stat.exists
+
+
+- name: openvpn
+  stat: 
+    path: /etc/init.d/openvpn
+  register: service_status
+
+- name: Restart openvpn
+  service: 
+    name: openvpn
+    state: restarted
+  when: service_status.stat.exists
+
+- name: postfix
+  stat: 
+    path: /etc/init.d/postfix
+  register: service_status
+
+- name: Restart postfix
+  service:
+    name: postfix
+    state: restarted
+  when: service_status.stat.exists
+
+- name: nginx
+  stat: 
+    path: /etc/init.d/nginx
+  register: service_status
+
+- name: Restart nginx
+  service: 
+    name: nginx 
+    state: restarted
+  when: service_status.stat.exists
+
+- name: monit  
+  stat: 
+    path: /etc/init.d/monit
+  register: service_status
+
+- name: Restart monit 
+  service: 
+    name: monit
+    state: restarted
+  when: service_status.stat.exists
+
+- name: unbound 
+  stat: 
+    path: /etc/init.d/unbound
+  register: service_status
+
+- name: Restart unbound
+  service: 
+    name: unbound
+    state: restarted
+  when: service_status.stat.exists
+
+- name: Final results
+  shell: sudo lsof -n | grep ssl | grep DEL | wc -l
+  register: result
+
+- name: Success if 0
+  debug:
+    msg: "{{ result.stdout }}"
